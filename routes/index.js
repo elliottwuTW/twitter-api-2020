@@ -15,6 +15,9 @@ const followshipController = require('../controllers/followshipController')
 // authorizers
 const { authToken, authUserRole, authAdminRole } = require('../middleware/auth')
 
+// validator
+const validator = require('../middleware/validator')
+
 // routes
 // tweet
 router.post('/api/tweets', authToken, authUserRole, tweetController.createTweet)
@@ -27,7 +30,7 @@ router.delete('/api/tweets/:id', authToken, authUserRole, tweetController.delete
 router.post('/api/tweets/:id/like', authToken, authUserRole, likeController.createLike)
 router.post('/api/tweets/:id/unlike', authToken, authUserRole, likeController.deleteLike)
 
-//followship
+// followship
 router.post('/api/followships', authToken, authUserRole, followshipController.createFollowship)
 router.delete('/api/followships/:id', authToken, authUserRole, followshipController.deleteFollowship)
 
@@ -38,21 +41,21 @@ router.get('/api/replies/:id', authToken, authUserRole, replyController.getReply
 router.put('/api/replies/:id', authToken, authUserRole, replyController.updateReply)
 router.delete('/api/replies/:id', authToken, authUserRole, replyController.deleteReply)
 
-//users
-router.post('/api/login', userController.login)
-router.post('/api/users', userController.createUser)
+// users
+router.post('/api/login', validator.login, userController.login)
+router.post('/api/users', validator.userInfo, userController.createUser)
 router.get('/api/users/top', authToken, authUserRole, userController.getTopUsers)
-router.get('/api/users/:id', authToken, authUserRole, userController.getUser)
-router.get('/api/users/:id/tweets', authToken, authUserRole, userController.getTweets)
-router.put('/api/users/:id', authToken, authUserRole, upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), userController.updateUser) //編輯個人資料
-router.put('/api/users/:id/setting', authToken, authUserRole, userController.updateUserSetting) //設定
-router.get('/api/users/:id/replied_tweets', authToken, authUserRole, userController.getRepliedTweets)
-router.get('/api/users/:id/followings', authToken, authUserRole, userController.getFollowings)
-router.get('/api/users/:id/followers', authToken, authUserRole, userController.getFollowers)
-router.get('/api/users/:id/likes', authToken, authUserRole, userController.getLikedTweets)
+router.get('/api/users/:id', authToken, authUserRole, validator.userExists, userController.getUser)
+router.get('/api/users/:id/tweets', authToken, authUserRole, validator.userExists, userController.getTweets)
+router.put('/api/users/:id', authToken, authUserRole, validator.userExists, upload.fields([{ name: 'avatar', maxCount: 1 }, { name: 'cover', maxCount: 1 }]), userController.updateUser) //編輯個人資料
+router.put('/api/users/:id/setting', authToken, authUserRole, validator.userExists, userController.updateUserSetting) //設定
+router.get('/api/users/:id/replied_tweets', authToken, authUserRole, validator.userExists, userController.getRepliedTweets)
+router.get('/api/users/:id/followings', authToken, authUserRole, validator.userExists, userController.getFollowings)
+router.get('/api/users/:id/followers', authToken, authUserRole, validator.userExists, userController.getFollowers)
+router.get('/api/users/:id/likes', authToken, authUserRole, validator.userExists, userController.getLikedTweets)
 router.get('/api/get_current_user', authToken, authUserRole, userController.getCurrentUser)
 
-//admin
+// admin
 router.get('/api/admin/users', authToken, authAdminRole, userController.getUsers)
 router.get('/api/admin/tweets', authToken, authAdminRole, tweetController.getTweets)
 router.delete('/api/admin/tweets/:id', authToken, authAdminRole, tweetController.deleteTweet)
