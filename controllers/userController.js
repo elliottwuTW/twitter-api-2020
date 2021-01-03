@@ -209,7 +209,7 @@ module.exports = {
        */
       if (req.files !== undefined) {
         if (Object.keys(req.files).length) {
-          const { uploadToImgur } = require('../utils/helpers')
+          const uploadToImgur = require('../utils/uploadToImgur')
           let [cover, avatar] = [user.cover, user.avatar]
           if (req.files.cover) {
             cover = await uploadToImgur(req.files.cover[0].path)

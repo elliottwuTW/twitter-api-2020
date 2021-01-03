@@ -8,7 +8,7 @@ module.exports = {
     const userIds = users.map(u => u.id)
     const tweetIds = tweets.map(t => t.id)
 
-    const { shuffleArray } = require('../utils/helpers')
+    const shuffleArray = require('../utils/shuffleArray')
 
     const replies = []
 
