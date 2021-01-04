@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Tweet } = require('../models')
 
 // check if email is valid
 function isEmailValid (email) {
@@ -18,16 +18,13 @@ function validateResult (req, res, next) {
 module.exports = {
   userInfo: async (req, res, next) => {
     req.errors = []
-    // check required fields
     const { account, name, email, password, checkPassword } = req.body
     if (!account || !name || !email || !password || !checkPassword) {
       req.errors.push('所有欄位皆為必填')
     }
-    // check if password matches checkPassword
     if (password.trim() !== checkPassword.trim()) {
       req.errors.push('密碼和確認密碼不相符')
     }
-    // check if the email's format is valid
     if (!isEmailValid(email.trim())) {
       req.errors.push('Email格式錯誤')
     }
@@ -64,6 +61,27 @@ module.exports = {
     const user = await User.findByPk(req.params.id)
     if (!user) {
       req.errors.push('使用者不存在')
+    }
+
+    return validateResult(req, res, next)
+  },
+  tweetInfo: (req, res, next) => {
+    req.errors = []
+    const description = req.body.description.trim()
+    if (!description) {
+      req.errors.push('不可新增空白推文')
+    }
+    if (description.length > 140) {
+      req.errors.push('推文字數不可超過 140 字')
+    }
+
+    return validateResult(req, res, next)
+  },
+  tweetExists: async (req, res, next) => {
+    req.errors = []
+    const tweet = await Tweet.findByPk(req.params.id)
+    if (!tweet) {
+      req.errors.push('推文不存在')
     }
 
     return validateResult(req, res, next)

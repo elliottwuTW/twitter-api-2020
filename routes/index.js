@@ -20,11 +20,11 @@ const validator = require('../middleware/validator')
 
 // routes
 // tweet
-router.post('/api/tweets', authToken, authUserRole, tweetController.createTweet)
+router.post('/api/tweets', authToken, authUserRole, validator.tweetInfo, tweetController.createTweet)
 router.get('/api/tweets', authToken, authUserRole, tweetController.getTweets)
-router.get('/api/tweets/:id', authToken, authUserRole, tweetController.getTweet)
-router.put('/api/tweets/:id', authToken, authUserRole, tweetController.updateTweet)
-router.delete('/api/tweets/:id', authToken, authUserRole, tweetController.deleteTweet)
+router.get('/api/tweets/:id', authToken, authUserRole, validator.tweetExists, tweetController.getTweet)
+router.put('/api/tweets/:id', authToken, authUserRole, validator.tweetExists, validator.tweetInfo, tweetController.updateTweet)
+router.delete('/api/tweets/:id', authToken, authUserRole, validator.tweetExists, tweetController.deleteTweet)
 
 // like
 router.post('/api/tweets/:id/like', authToken, authUserRole, likeController.createLike)

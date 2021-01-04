@@ -7,13 +7,6 @@ module.exports = {
   createTweet: async (req, res, next) => {
     try {
       const description = req.body.description.trim()
-      // validation
-      if (!description) {
-        return res.json({ status: 'error', message: '不可新增空白推文' })
-      }
-      if (description.length > 140) {
-        return res.json({ status: 'error', message: '推文字數不可超過 140 字' })
-      }
       await Tweet.create({ description, UserId: helpers.getUser(req).id })
       return res.json({
         status: 'success',
@@ -43,9 +36,6 @@ module.exports = {
         `,
         { plain: true, type: QueryTypes.SELECT }
       )
-      if (!tweet) {
-        return res.json({ status: 'error', message: '找不到推文' })
-      }
       // build the user info
       const User = await sequelize.query(
         `
@@ -101,20 +91,10 @@ module.exports = {
   updateTweet: async (req, res, next) => {
     try {
       const tweet = await Tweet.findByPk(req.params.id)
-      if (!tweet) {
-        return res.json({ status: 'error', message: '找不到推文' })
-      }
       if (tweet.UserId !== helpers.getUser(req).id) {
         return res.json({ status: 'error', message: '使用者非推文作者，無權限更新' })
       }
-      const description = req.body.description
-      if (!description) {
-        return res.json({ status: 'error', message: '不可新增空白推文' })
-      }
-      if (description.length > 140) {
-        return res.json({ status: 'error', message: '推文字數不可超過 140 字' })
-      }
-
+      const description = req.body.description.trim()
       await tweet.update({ description })
       return res.json({
         status: 'success',
@@ -127,9 +107,6 @@ module.exports = {
   deleteTweet: async (req, res, next) => {
     try {
       const tweet = await Tweet.findByPk(req.params.id)
-      if (!tweet) {
-        return res.json({ status: 'error', message: '找不到推文' })
-      }
       if (tweet.UserId !== helpers.getUser(req).id && helpers.getUser(req).role !== 'admin') {
         return res.json({ status: 'error', message: '使用者非推文作者或管理員，無法刪除' })
       }
