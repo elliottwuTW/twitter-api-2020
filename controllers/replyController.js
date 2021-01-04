@@ -45,7 +45,7 @@ module.exports = {
       const reply = await Reply.findByPk(req.params.id)
 
       if (reply.UserId !== helpers.getUser(req).id) {
-        return res.json({ status: 'error', message: '使用者非留言作者，無權限更新' })
+        return res.json({ status: 'error', message: ['使用者非留言作者，無權限更新'] })
       }
 
       const comment = req.body.comment
@@ -63,7 +63,7 @@ module.exports = {
       const reply = await Reply.findByPk(req.params.id)
 
       if (reply.UserId !== helpers.getUser(req).id) {
-        return res.json({ status: 'error', message: '使用者非留言作者，無法刪除' })
+        return res.json({ status: 'error', message: ['使用者非留言作者，無法刪除'] })
       }
 
       await reply.destroy()

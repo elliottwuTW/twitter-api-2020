@@ -9,7 +9,7 @@ module.exports = {
       const id = req.body.id
 
       if (String(id) === String(helpers.getUser(req).id)) {
-        return res.json({ status: 'error', message: '不能追蹤自己' })
+        return res.json({ status: 'error', message: ['不能追蹤自己'] })
       }
 
       await Followship.create({ followerId: helpers.getUser(req).id, followingId: id })

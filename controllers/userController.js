@@ -20,7 +20,7 @@ module.exports = {
       const { account, password } = req.body
       const user = await User.findOne({ where: { account } })
       if (!bcrypt.compareSync(password, user.password)) {
-        return res.status(401).json({ status: 'error', message: '帳號或密碼錯誤' })
+        return res.status(401).json({ status: 'error', message: ['帳號或密碼錯誤'] })
       }
 
       const payload = { id: user.id }
@@ -112,7 +112,7 @@ module.exports = {
         WHERE U.id = ${req.params.id};`, { plain: true, type: QueryTypes.SELECT })
 
       if (user.role === 'admin') {
-        return res.status(401).json({ status: 'error', message: 'Unauthorized' })
+        return res.status(401).json({ status: 'error', message: ['Unauthorized'] })
       }
       delete user.role //not required on frontend
       return res.json(user)
@@ -150,11 +150,11 @@ module.exports = {
   },
   updateUser: async (req, res, next) => { //編輯個人資料 name, avatar, introduction, cover
     if (helpers.getUser(req).id !== Number(req.params.id)) {
-      return res.json({ status: 'error', message: '無權編輯' })
+      return res.json({ status: 'error', message: ['無權編輯'] })
     }
     const { name, introduction } = req.body
     if (!name.trim()) {
-      return res.json({ status: 'error', message: '名稱不能空白' })
+      return res.json({ status: 'error', message: ['名稱不能空白'] })
     }
     try {
       const user = await User.findByPk(req.params.id)
@@ -184,7 +184,7 @@ module.exports = {
   },
   updateUserSetting: async (req, res, next) => { // 設定
     if (helpers.getUser(req).id !== Number(req.params.id)) {
-      return res.json({ status: 'error', message: '無權編輯' })
+      return res.json({ status: 'error', message: ['無權編輯'] })
     }
     try {
       const { account, name, email, password } = req.body

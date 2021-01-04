@@ -92,7 +92,7 @@ module.exports = {
     try {
       const tweet = await Tweet.findByPk(req.params.id)
       if (tweet.UserId !== helpers.getUser(req).id) {
-        return res.json({ status: 'error', message: '使用者非推文作者，無權限更新' })
+        return res.json({ status: 'error', message: ['使用者非推文作者，無權限更新'] })
       }
       const description = req.body.description.trim()
       await tweet.update({ description })
@@ -108,7 +108,7 @@ module.exports = {
     try {
       const tweet = await Tweet.findByPk(req.params.id)
       if (tweet.UserId !== helpers.getUser(req).id && helpers.getUser(req).role !== 'admin') {
-        return res.json({ status: 'error', message: '使用者非推文作者或管理員，無法刪除' })
+        return res.json({ status: 'error', message: ['使用者非推文作者或管理員，無法刪除'] })
       }
 
       // delete all replies and likes belonging to the tweet
