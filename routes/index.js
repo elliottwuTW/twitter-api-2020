@@ -35,11 +35,11 @@ router.post('/api/followships', authToken, authUserRole, followshipController.cr
 router.delete('/api/followships/:id', authToken, authUserRole, followshipController.deleteFollowship)
 
 // reply
-router.post('/api/tweets/:id/replies', authToken, authUserRole, replyController.createReply)
-router.get('/api/tweets/:id/replies', authToken, authUserRole, replyController.getReplies)
-router.get('/api/replies/:id', authToken, authUserRole, replyController.getReply)
-router.put('/api/replies/:id', authToken, authUserRole, replyController.updateReply)
-router.delete('/api/replies/:id', authToken, authUserRole, replyController.deleteReply)
+router.post('/api/tweets/:id/replies', authToken, authUserRole, validator.tweetExists, validator.replyInfo, replyController.createReply)
+router.get('/api/tweets/:id/replies', authToken, authUserRole, validator.tweetExists, replyController.getReplies)
+router.get('/api/replies/:id', authToken, authUserRole, validator.replyExists, replyController.getReply)
+router.put('/api/replies/:id', authToken, authUserRole, validator.replyExists, validator.replyInfo, replyController.updateReply)
+router.delete('/api/replies/:id', authToken, authUserRole, validator.replyExists, replyController.deleteReply)
 
 // users
 router.post('/api/login', validator.login, userController.login)

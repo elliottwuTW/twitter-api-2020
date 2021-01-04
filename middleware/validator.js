@@ -1,4 +1,4 @@
-const { User, Tweet } = require('../models')
+const { User, Tweet, Reply } = require('../models')
 
 // check if email is valid
 function isEmailValid (email) {
@@ -82,6 +82,24 @@ module.exports = {
     const tweet = await Tweet.findByPk(req.params.id)
     if (!tweet) {
       req.errors.push('推文不存在')
+    }
+
+    return validateResult(req, res, next)
+  },
+  replyInfo: (req, res, next) => {
+    req.errors = []
+    const comment = req.body.comment
+    if (!comment) {
+      req.errors.push('不可提交空白留言')
+    }
+
+    return validateResult(req, res, next)
+  },
+  replyExists: async (req, res, next) => {
+    req.errors = []
+    const reply = await Reply.findByPk(req.params.id)
+    if (!reply) {
+      req.errors.push('留言不存在')
     }
 
     return validateResult(req, res, next)
