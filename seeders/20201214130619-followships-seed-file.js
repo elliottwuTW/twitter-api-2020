@@ -6,7 +6,7 @@ module.exports = {
     const users = await User.findAll({ where: { role: 'user' }, attributes: ['id'] })
     const userIds = users.map(u => u.id)
 
-    const { shuffleArray } = require('../utils/helpers')
+    const shuffleArray = require('../utils/shuffleArray')
 
     const followships = []
 

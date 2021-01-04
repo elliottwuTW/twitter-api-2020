@@ -1,6 +1,6 @@
 'use strict';
 const { User, Tweet } = require('../models/index')
-const { shuffleArray } = require('../utils/helpers')
+const shuffleArray = require('../utils/shuffleArray')
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const users = await User.findAll({ where: { role: 'user' }, attributes: ['id'] })
