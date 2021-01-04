@@ -27,12 +27,12 @@ router.put('/api/tweets/:id', authToken, authUserRole, validator.tweetExists, va
 router.delete('/api/tweets/:id', authToken, authUserRole, validator.tweetExists, tweetController.deleteTweet)
 
 // like
-router.post('/api/tweets/:id/like', authToken, authUserRole, likeController.createLike)
-router.post('/api/tweets/:id/unlike', authToken, authUserRole, likeController.deleteLike)
+router.post('/api/tweets/:id/like', authToken, authUserRole, validator.tweetExists, validator.likeRepeats, likeController.createLike)
+router.post('/api/tweets/:id/unlike', authToken, authUserRole, validator.tweetExists, validator.likeExists, likeController.deleteLike)
 
 // followship
-router.post('/api/followships', authToken, authUserRole, followshipController.createFollowship)
-router.delete('/api/followships/:id', authToken, authUserRole, followshipController.deleteFollowship)
+router.post('/api/followships', authToken, authUserRole, validator.userExists, validator.followRepeats, followshipController.createFollowship)
+router.delete('/api/followships/:id', authToken, authUserRole, validator.userExists, validator.followExists, followshipController.deleteFollowship)
 
 // reply
 router.post('/api/tweets/:id/replies', authToken, authUserRole, validator.tweetExists, validator.replyInfo, replyController.createReply)
@@ -58,6 +58,6 @@ router.get('/api/get_current_user', authToken, authUserRole, userController.getC
 // admin
 router.get('/api/admin/users', authToken, authAdminRole, userController.getUsers)
 router.get('/api/admin/tweets', authToken, authAdminRole, tweetController.getTweets)
-router.delete('/api/admin/tweets/:id', authToken, authAdminRole, tweetController.deleteTweet)
+router.delete('/api/admin/tweets/:id', authToken, authAdminRole, validator.tweetExists, tweetController.deleteTweet)
 
 module.exports = router

@@ -1,4 +1,5 @@
-const { User, Tweet, Reply } = require('../models')
+const { User, Tweet, Reply, Like, Followship } = require('../models')
+const helpers = require('../_helpers')
 
 // check if email is valid
 function isEmailValid (email) {
@@ -58,7 +59,8 @@ module.exports = {
   },
   userExists: async (req, res, next) => {
     req.errors = []
-    const user = await User.findByPk(req.params.id)
+    const id = req.params.id || req.body.id
+    const user = await User.findByPk(id)
     if (!user) {
       req.errors.push('使用者不存在')
     }
@@ -100,6 +102,50 @@ module.exports = {
     const reply = await Reply.findByPk(req.params.id)
     if (!reply) {
       req.errors.push('留言不存在')
+    }
+
+    return validateResult(req, res, next)
+  },
+  likeRepeats: async (req, res, next) => {
+    req.errors = []
+    const like = await Like.findOne({
+      where: { UserId: helpers.getUser(req).id, TweetId: req.params.id }
+    })
+    if (like) {
+      req.errors.push('重複按讚')
+    }
+
+    return validateResult(req, res, next)
+  },
+  likeExists: async (req, res, next) => {
+    req.errors = []
+    const like = await Like.findOne({
+      where: { UserId: helpers.getUser(req).id, TweetId: req.params.id }
+    })
+    if (!like) {
+      req.errors.push('按讚不存在')
+    }
+
+    return validateResult(req, res, next)
+  },
+  followRepeats: async (req, res, next) => {
+    req.errors = []
+    const followship = await Followship.findOne({
+      where: { followerId: helpers.getUser(req).id, followingId: req.body.id }
+    })
+    if (followship) {
+      req.errors.push('重複追蹤')
+    }
+
+    return validateResult(req, res, next)
+  },
+  followExists: async (req, res, next) => {
+    req.errors = []
+    const followship = await Followship.findOne({
+      where: { followerId: helpers.getUser(req).id, followingId: req.params.id }
+    })
+    if (!followship) {
+      req.errors.push('追蹤紀錄不存在')
     }
 
     return validateResult(req, res, next)
